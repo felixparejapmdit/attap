@@ -31,6 +31,12 @@ app.use("/api/workers", workersRoute);
 app.use("/api/tasks", tasksRoute);
 app.use("/api/attendanceLogs", attendanceLogsRoute);
 
+
+// // Start server
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://172.18.125.134:${PORT}`);
+//});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost/:${PORT}`);
