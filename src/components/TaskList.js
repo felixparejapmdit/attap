@@ -13,35 +13,61 @@ const TaskList = () => {
   }, []);
 
   const fetchTasks = async () => {
-    const response = await axios.get("/api/tasks");
-    setTasks(response.data);
+    try {
+      const response = await axios.get("http://localhost:5000/api/tasks"); // Update with backend URL
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      alert("Failed to load tasks. Please try again.");
+    }
   };
 
   const fetchAreas = async () => {
-    const response = await axios.get("/api/areas");
-    setAreas(response.data);
+    try {
+      const response = await axios.get("http://localhost:5000/api/areas"); // Update with backend URL
+      setAreas(response.data);
+    } catch (error) {
+      console.error("Error fetching areas:", error);
+      alert("Failed to load areas. Please try again.");
+    }
   };
 
   const addTask = async () => {
-    if (newTask.trim() === "" || selectedArea === "") return;
+    if (newTask.trim() === "" || selectedArea === "") {
+      alert("Please enter a task and select an area.");
+      return;
+    }
 
-    const response = await axios.post("/api/tasks", {
-      TaskDescription: newTask,
-      AreaAssigned: selectedArea,
-    });
-    setTasks([...tasks, response.data]);
-    setNewTask("");
+    try {
+      const response = await axios.post("http://localhost:5000/api/tasks", {
+        TaskDescription: newTask,
+        AreaAssigned: selectedArea,
+      });
+      setTasks([...tasks, response.data]);
+      setNewTask("");
+      alert("Task added successfully.");
+    } catch (error) {
+      console.error("Error adding task:", error);
+      alert("Failed to add task. Please try again.");
+    }
   };
 
   const deleteTask = async (taskId) => {
-    await axios.delete(`/api/tasks/${taskId}`);
-    setTasks(tasks.filter((task) => task._id !== taskId));
+    try {
+      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`);
+      setTasks(tasks.filter((task) => task._id !== taskId));
+      alert("Task deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      alert("Failed to delete task. Please try again.");
+    }
   };
 
   return (
     <div>
       <h2>Tasks List</h2>
 
+      {/* Area selection dropdown */}
       <select
         value={selectedArea}
         onChange={(e) => setSelectedArea(e.target.value)}
@@ -54,6 +80,7 @@ const TaskList = () => {
         ))}
       </select>
 
+      {/* New task input */}
       <input
         type="text"
         value={newTask}
@@ -62,6 +89,7 @@ const TaskList = () => {
       />
       <button onClick={addTask}>Add Task</button>
 
+      {/* Task list */}
       <ul>
         {tasks.map((task) => (
           <li key={task._id}>

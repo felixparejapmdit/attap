@@ -4,32 +4,47 @@ import axios from "axios";
 const Attendance = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState("");
-  const [attendance, setAttendance] = useState(Array(200).fill(false)); // Array of 200 workers' attendance, default to false (not selected)
+  const [workers, setWorkers] = useState([]);
+  const [attendance, setAttendance] = useState(Array(200).fill(false));
 
-  // Fetch areas on component load
+  // Fetch areas and workers on component load
   useEffect(() => {
-    axios.get("/api/areas").then((response) => {
-      setAreas(response.data);
-    });
+    const fetchAreas = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/areas");
+        setAreas(response.data);
+      } catch (error) {
+        console.error("Error fetching areas:", error);
+      }
+    };
+
+    const fetchWorkers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/workers");
+        setWorkers(response.data);
+      } catch (error) {
+        console.error("Error fetching workers:", error);
+      }
+    };
+
+    fetchAreas();
+    fetchWorkers();
   }, []);
 
-  // Handle area selection
   const handleAreaChange = (e) => {
     setSelectedArea(e.target.value);
   };
 
-  // Handle worker selection (tap to select, double-tap to deselect)
   const handleWorkerSelect = (index) => {
     const updatedAttendance = [...attendance];
-    updatedAttendance[index] = !updatedAttendance[index]; // Toggle attendance
+    updatedAttendance[index] = !updatedAttendance[index];
     setAttendance(updatedAttendance);
   };
 
-  // Handle form submission for attendance logging
-  const submitAttendance = () => {
+  const submitAttendance = async () => {
     const presentWorkers = attendance
-      .map((isSelected, index) => (isSelected ? index + 1 : null))
-      .filter((workerID) => workerID !== null); // Get the IDs of selected workers (present)
+      .map((isSelected, index) => (isSelected ? workers[index]?._id : null))
+      .filter((workerID) => workerID !== null);
 
     if (!selectedArea) {
       alert("Please select an area.");
@@ -41,26 +56,55 @@ const Attendance = () => {
       return;
     }
 
-    // Submit attendance to the backend
-    axios
-      .post("/api/attendanceLogs", {
-        area: selectedArea,
-        workers: presentWorkers,
-      })
-      .then((response) => {
-        alert("Attendance submitted successfully.");
-        setAttendance(Array(200).fill(false)); // Reset attendance
-      })
-      .catch((error) => {
-        console.error("Error submitting attendance:", error);
-      });
+    // Format the current date and time
+    const currentDate = new Date();
+    const date = currentDate.toISOString().split("T")[0]; // 'YYYY-MM-DD' format
+    const time = currentDate.toTimeString().slice(0, 5); // 'HH:mm' format
+
+    // Construct the attendance data payload
+    const attendanceData = presentWorkers.map((workerID) => ({
+      WorkerID: workerID,
+      Area: selectedArea,
+      Date: date,
+      Time: time,
+      Status: "Present",
+    }));
+
+    console.log("Constructed attendance data:", attendanceData);
+
+    try {
+      // Loop over attendanceData if backend expects individual entries
+      for (let record of attendanceData) {
+        console.log("Submitting record:", record); // Debug log for each record
+
+        const response = await axios.post(
+          "http://localhost:5000/api/attendancelogs",
+          record
+        );
+
+        if (response.status === 201 || response.status === 200) {
+          console.log("Record submitted successfully:", record);
+        } else {
+          console.error("Failed to submit record:", record);
+          throw new Error("Failed to submit attendance");
+        }
+      }
+
+      alert("All attendance records submitted successfully.");
+      setAttendance(Array(200).fill(false)); // Reset the attendance selection
+    } catch (error) {
+      console.error(
+        "Error submitting attendance:",
+        error.response?.data || error
+      );
+      alert("Error submitting attendance. Please try again.");
+    }
   };
 
   return (
     <div>
       <h2>Attendance</h2>
 
-      {/* Dropdown for selecting area */}
       <div>
         <label>Select Area:</label>
         <select value={selectedArea} onChange={handleAreaChange}>
@@ -73,7 +117,6 @@ const Attendance = () => {
         </select>
       </div>
 
-      {/* Worker number buttons */}
       <div
         style={{
           display: "grid",
@@ -82,9 +125,9 @@ const Attendance = () => {
           marginTop: "20px",
         }}
       >
-        {Array.from({ length: 200 }, (_, index) => (
+        {workers.slice(0, 200).map((worker, index) => (
           <button
-            key={index}
+            key={worker._id}
             onClick={() => handleWorkerSelect(index)}
             style={{
               backgroundColor: attendance[index] ? "green" : "lightgrey",
@@ -93,12 +136,11 @@ const Attendance = () => {
               border: "1px solid #ccc",
             }}
           >
-            {index + 1}
+            {worker.WorkerID || index + 1}
           </button>
         ))}
       </div>
 
-      {/* Submit button */}
       <div style={{ marginTop: "20px" }}>
         <button onClick={submitAttendance}>Submit Attendance</button>
       </div>

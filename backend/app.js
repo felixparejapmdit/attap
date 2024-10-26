@@ -16,10 +16,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // MongoDB connection
-mongoose.connect("mongodb://localhost:27017/attendance-app", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://felixparejapmdit07:hBXOoOzEFcNTfJmC@cluster0.wxvlrzj.mongodb.net/attendance-app?retryWrites=true&w=majority&appName=Cluster0",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 // Use Routes
 app.use("/api/areas", areasRoute);

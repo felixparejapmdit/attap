@@ -10,21 +10,43 @@ const AreaList = () => {
   }, []);
 
   const fetchAreas = async () => {
-    const response = await axios.get("/api/areas");
-    setAreas(response.data);
+    try {
+      const response = await axios.get("http://localhost:5000/api/areas"); // Update to your backend URL
+      setAreas(response.data);
+    } catch (error) {
+      console.error("Error fetching areas:", error);
+      alert("Failed to load areas. Please try again.");
+    }
   };
 
   const addArea = async () => {
-    if (newArea.trim() === "") return;
+    if (newArea.trim() === "") {
+      alert("Area name cannot be empty.");
+      return;
+    }
 
-    const response = await axios.post("/api/areas", { AreaName: newArea });
-    setAreas([...areas, response.data]);
-    setNewArea(""); // Clear input after adding
+    try {
+      const response = await axios.post("http://localhost:5000/api/areas", {
+        AreaName: newArea,
+      });
+      setAreas([...areas, response.data]);
+      setNewArea(""); // Clear input after adding
+      alert("Area added successfully.");
+    } catch (error) {
+      console.error("Error adding area:", error);
+      alert("Failed to add area. Please try again.");
+    }
   };
 
   const deleteArea = async (areaId) => {
-    await axios.delete(`/api/areas/${areaId}`);
-    setAreas(areas.filter((area) => area._id !== areaId));
+    try {
+      await axios.delete(`http://localhost:5000/api/areas/${areaId}`);
+      setAreas(areas.filter((area) => area._id !== areaId));
+      alert("Area deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting area:", error);
+      alert("Failed to delete area. Please try again.");
+    }
   };
 
   return (
