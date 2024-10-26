@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Attendance = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState("");
@@ -11,7 +13,7 @@ const Attendance = () => {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/areas");
+        const response = await axios.get(`${API_URL}/api/areas`);
         setAreas(response.data);
       } catch (error) {
         console.error("Error fetching areas:", error);
@@ -20,7 +22,7 @@ const Attendance = () => {
 
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/workers");
+        const response = await axios.get(`${API_URL}/api/workers`);
         setWorkers(response.data);
       } catch (error) {
         console.error("Error fetching workers:", error);
@@ -76,9 +78,8 @@ const Attendance = () => {
       // Loop over attendanceData if backend expects individual entries
       for (let record of attendanceData) {
         console.log("Submitting record:", record); // Debug log for each record
-
         const response = await axios.post(
-          "http://localhost:5000/api/attendancelogs",
+          `${API_URL}/api/attendancelogs`,
           record
         );
 

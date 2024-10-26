@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const PORT = 5000;
 // Import routes
 const areasRoute = require("./routes/areas");
 const workersRoute = require("./routes/workers");
@@ -31,7 +32,6 @@ app.use("/api/tasks", tasksRoute);
 app.use("/api/attendanceLogs", attendanceLogsRoute);
 
 // Start the server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on http://localhost/:${PORT}`);
 });

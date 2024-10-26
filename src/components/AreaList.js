@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const AreaList = () => {
   const [areas, setAreas] = useState([]);
   const [newArea, setNewArea] = useState("");
@@ -11,7 +13,7 @@ const AreaList = () => {
 
   const fetchAreas = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/areas"); // Update to your backend URL
+      const response = await axios.get(`${API_URL}/api/areas`); // Update to your backend URL
       setAreas(response.data);
     } catch (error) {
       console.error("Error fetching areas:", error);
@@ -26,7 +28,7 @@ const AreaList = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/areas", {
+      const response = await axios.post(`${API_URL}/api/areas`, {
         AreaName: newArea,
       });
       setAreas([...areas, response.data]);
@@ -40,7 +42,7 @@ const AreaList = () => {
 
   const deleteArea = async (areaId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/areas/${areaId}`);
+      await axios.delete(`${API_URL}/api/areas/${areaId}`);
       setAreas(areas.filter((area) => area._id !== areaId));
       alert("Area deleted successfully.");
     } catch (error) {

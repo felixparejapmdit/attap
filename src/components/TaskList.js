@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -14,7 +16,7 @@ const TaskList = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/tasks"); // Update with backend URL
+      const response = await axios.get(`${API_URL}/api/tasks`); // Update with backend URL
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -24,7 +26,7 @@ const TaskList = () => {
 
   const fetchAreas = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/areas"); // Update with backend URL
+      const response = await axios.get(`${API_URL}/api/areas`); // Update with backend URL
       setAreas(response.data);
     } catch (error) {
       console.error("Error fetching areas:", error);
@@ -39,7 +41,7 @@ const TaskList = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/tasks", {
+      const response = await axios.post(`${API_URL}/api/tasks`, {
         TaskDescription: newTask,
         AreaAssigned: selectedArea,
       });
@@ -54,7 +56,7 @@ const TaskList = () => {
 
   const deleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`);
+      await axios.delete(`${API_URL}/api/tasks/${taskId}`);
       setTasks(tasks.filter((task) => task._id !== taskId));
       alert("Task deleted successfully.");
     } catch (error) {

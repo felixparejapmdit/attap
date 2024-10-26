@@ -17,6 +17,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { makeStyles } from "@mui/styles";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const useStyles = makeStyles({
   container: {
     padding: "20px",
@@ -79,7 +81,7 @@ const WorkerList = () => {
 
   const fetchWorkers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/workers");
+      const response = await axios.get(`${API_URL}/api/workers`);
       setWorkers(response.data);
     } catch (error) {
       console.error("Error fetching workers:", error);
@@ -107,11 +109,11 @@ const WorkerList = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `http://localhost:5000/api/workers/${currentWorker._id}`,
+          `${API_URL}/api/workers/${currentWorker._id}`,
           currentWorker
         );
       } else {
-        await axios.post("http://localhost:5000/api/workers", currentWorker);
+        await axios.post(`${API_URL}/api/workers`, currentWorker);
       }
       fetchWorkers();
       handleClose();
@@ -122,7 +124,7 @@ const WorkerList = () => {
 
   const handleDelete = async (workerId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/workers/${workerId}`);
+      await axios.delete(`${API_URL}/api/workers/${workerId}`);
       fetchWorkers();
     } catch (error) {
       console.error("Error deleting worker:", error);

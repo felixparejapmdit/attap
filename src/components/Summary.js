@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Summary = () => {
   const [areas, setAreas] = useState([]);
   const [selectedArea, setSelectedArea] = useState("");
@@ -13,7 +15,7 @@ const Summary = () => {
 
   const fetchAreas = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/areas");
+      const response = await axios.get(`${API_URL}/api/areas`);
       setAreas(response.data);
     } catch (error) {
       console.error("Error fetching areas:", error);
@@ -24,7 +26,7 @@ const Summary = () => {
   const fetchWorkersByArea = async (areaId) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/areas/${areaId}/workers`
+        `${API_URL}/api/areas/${areaId}/workers`
       );
       setWorkers(response.data);
 
@@ -64,7 +66,7 @@ const Summary = () => {
   const saveAllRemarks = async () => {
     try {
       const saveRequests = Object.keys(remarks).map((workerId) =>
-        axios.put(`http://localhost:5000/api/workers/${workerId}`, {
+        axios.put(`${API_URL}/api/workers/${workerId}`, {
           Remarks: remarks[workerId],
         })
       );
