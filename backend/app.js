@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const PORT = 5000;
+const PORT = 6000;
 // Import routes
 const areasRoute = require("./routes/areas");
 const workersRoute = require("./routes/workers");
@@ -30,7 +30,6 @@ app.use("/api/areas", areasRoute);
 app.use("/api/workers", workersRoute);
 app.use("/api/tasks", tasksRoute);
 app.use("/api/attendanceLogs", attendanceLogsRoute);
-
 
 // // Start server
 // app.listen(PORT, () => {
