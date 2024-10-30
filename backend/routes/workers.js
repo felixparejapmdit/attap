@@ -41,15 +41,15 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a worker's remarks
+// Update a worker's details
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { Remarks } = req.body;
+    const { WorkerID, Name, Trade, AssignedArea, Remarks } = req.body;
 
     const updatedWorker = await Worker.findByIdAndUpdate(
       id,
-      { Remarks },
+      { WorkerID, Name, Trade, AssignedArea, Remarks },
       { new: true }
     );
     if (!updatedWorker) {
@@ -57,8 +57,8 @@ router.put("/:id", async (req, res) => {
     }
     res.json(updatedWorker);
   } catch (error) {
-    console.error("Error updating worker remarks:", error);
-    res.status(500).json({ error: "Failed to update worker remarks" });
+    console.error("Error updating worker:", error);
+    res.status(500).json({ error: "Failed to update worker" });
   }
 });
 

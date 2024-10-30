@@ -9,8 +9,13 @@ import {
   TextField,
   IconButton,
   Typography,
-  Card,
-  CardContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -22,28 +27,21 @@ const API_URL = process.env.REACT_APP_API_URL;
 const useStyles = makeStyles({
   container: {
     padding: "20px",
-    maxWidth: "800px",
+    maxWidth: "1200px",
     margin: "0 auto",
     textAlign: "center",
   },
-  workerCard: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "10px 20px",
-    margin: "10px 0",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "8px",
+  tableContainer: {
+    marginTop: "20px",
+    marginBottom: "20px",
+    width: "100%",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "8px",
   },
   title: {
     fontSize: "1.5rem",
     fontWeight: "bold",
     marginBottom: "20px",
-  },
-  actionButtons: {
-    display: "flex",
-    gap: "10px",
   },
   addButton: {
     marginBottom: "20px",
@@ -53,14 +51,12 @@ const useStyles = makeStyles({
       backgroundColor: "#1565c0",
     },
   },
-  dialog: {
-    "& .MuiDialog-paper": {
-      width: "400px",
-      padding: "20px",
-    },
-  },
   formField: {
     marginBottom: "15px",
+  },
+  tableHeader: {
+    backgroundColor: "#3f51b5",
+    color: "white",
   },
 });
 
@@ -142,29 +138,41 @@ const WorkerList = () => {
         Add Worker
       </Button>
 
-      <div>
-        {workers.map((worker) => (
-          <Card className={classes.workerCard} key={worker._id}>
-            <CardContent>
-              <Typography variant="h6">{worker.Name}</Typography>
-              <Typography variant="body2" color="textSecondary">
-                {worker.Trade}
-              </Typography>
-            </CardContent>
-            <div className={classes.actionButtons}>
-              <IconButton color="primary" onClick={() => handleOpen(worker)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                color="secondary"
-                onClick={() => handleDelete(worker._id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </div>
-          </Card>
-        ))}
-      </div>
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table>
+          <TableHead>
+            <TableRow className={classes.tableHeader}>
+              <TableCell style={{ color: "white" }}>Worker ID</TableCell>
+              <TableCell style={{ color: "white" }}>Name</TableCell>
+              <TableCell style={{ color: "white" }}>Designation</TableCell>
+              <TableCell style={{ color: "white" }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {workers.map((worker) => (
+              <TableRow key={worker._id}>
+                <TableCell>{worker.WorkerID}</TableCell>
+                <TableCell>{worker.Name}</TableCell>
+                <TableCell>{worker.Trade}</TableCell>
+                <TableCell>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleOpen(worker)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDelete(worker._id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Dialog open={open} onClose={handleClose} className={classes.dialog}>
         <DialogTitle>{isEditMode ? "Edit Worker" : "Add Worker"}</DialogTitle>

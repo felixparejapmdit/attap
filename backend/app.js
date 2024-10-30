@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const PORT = 6000;
+const PORT = 5000;
 // Import routes
 const areasRoute = require("./routes/areas");
 const workersRoute = require("./routes/workers");
@@ -38,5 +38,5 @@ app.use("/api/attendanceLogs", attendanceLogsRoute);
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost/:${PORT}`);
+  console.log(`Server is running on http://172.18.125.134/:${PORT}`);
 });
